@@ -69,12 +69,14 @@ backend/
    cp .env.example .env
    ```
 
-   Edit `.env` with your actual values:
+   Edit `.env` with your actual values (see .env.example for all variables):
    ```
-   PORT=3001
+   PORT=4000
    SUPABASE_URL=your_supabase_project_url
    SUPABASE_ANON_KEY=your_supabase_anon_key
    JWT_SECRET=your_jwt_secret_key_here
+   CLIENT_URL=http://localhost:5173
+   # ... and other variables
    ```
 
 4. Set up Supabase database tables:
@@ -131,7 +133,7 @@ npm run build
 npm start
 ```
 
-The server will start on `http://localhost:3001` by default.
+The server will start on `http://localhost:4000` by default.
 
 ## API Endpoints
 
@@ -162,21 +164,21 @@ The server will start on `http://localhost:3001` by default.
 
 ### Register a new user:
 ```bash
-curl -X POST http://localhost:3001/api/auth/register \
+curl -X POST http://localhost:4000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email": "user@example.com", "password": "password123"}'
 ```
 
 ### Upload a file:
 ```bash
-curl -X POST http://localhost:3001/api/files/upload \
+curl -X POST http://localhost:4000/api/files/upload \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -F "file=@/path/to/your/file.pdf"
 ```
 
 ### Share a file:
 ```bash
-curl -X POST http://localhost:3001/api/shares/FILE_ID/share \
+curl -X POST http://localhost:4000/api/shares/FILE_ID/share \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"email": "friend@example.com", "permissions": "view"}'
@@ -186,10 +188,20 @@ curl -X POST http://localhost:3001/api/shares/FILE_ID/share \
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `PORT` | Server port | No (defaults to 3001) |
+| `PORT` | Server port | No (defaults to 4000) |
+| `NODE_ENV` | Environment (development/production) | No |
+| `CLIENT_URL` | Frontend URL for CORS | Yes |
 | `SUPABASE_URL` | Supabase project URL | Yes |
 | `SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes |
 | `JWT_SECRET` | Secret key for JWT signing | Yes |
+| `DATABASE_URL` | PostgreSQL connection string | Optional |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Yes for OAuth |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Yes for OAuth |
+| `STRIPE_SECRET_KEY` | Stripe secret key | Yes for payments |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | Yes for payments |
+| `STRIPE_PRICE_ID_PRO` | Stripe price ID for Pro plan | Yes for payments |
+| `STRIPE_PRICE_ID_BUSINESS` | Stripe price ID for Business plan | Yes for payments |
 
 ## Development
 
@@ -215,6 +227,35 @@ curl -X POST http://localhost:3001/api/shares/FILE_ID/share \
 - File size limits
 - CORS configuration
 - Input validation and sanitization
+
+## Deployment
+
+### Backend (Render)
+
+1. Create a new Web Service on Render
+2. Connect your GitHub repository
+3. Set build settings:
+   - **Build Command**: `npm run build`
+   - **Start Command**: `npm start`
+4. Set environment variables in Render dashboard (see .env.example)
+5. For production, set:
+   - `NODE_ENV=production`
+   - `CLIENT_URL=https://your-vercel-app.vercel.app`
+   - Update webhook URLs in Stripe and Google Console to point to your Render URL
+
+### Frontend (Vercel)
+
+1. Create a new project on Vercel
+2. Connect your GitHub repository (frontend folder)
+3. Set environment variable:
+   - `VITE_API_BASE_URL=https://your-render-app.onrender.com/api`
+4. Deploy
+
+### Additional Setup
+
+- **Google OAuth**: Add your Vercel domain to authorized redirect URIs and JavaScript origins in Google Console
+- **Stripe Webhooks**: Update webhook endpoint to `https://your-render-app.onrender.com/api/billing/webhook`
+- **Supabase**: Ensure CORS settings allow your production domains
 
 ## Contributing
 

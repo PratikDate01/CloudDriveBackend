@@ -13,7 +13,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      callbackURL: "/api/auth/google/callback",
+      callbackURL: (process.env.BACKEND_URL || "https://clouddrivebackend.onrender.com") + "/api/auth/google/callback",
     },
     async (
       accessToken: string,
@@ -316,11 +316,11 @@ router.get("/google/callback",
       const user = req.user as any;
       const token = generateToken(user.id, user.email);
 
-      const frontendUrl = process.env.CLIENT_URL || "http://localhost:5173";
+      const frontendUrl = process.env.CLIENT_URL || "https://cloud-drive-frontend-six.vercel.app";
       res.redirect(`${frontendUrl}/drive?token=${token}&login=success`);
     } catch (error: any) {
       console.error("Google OAuth callback error:", error);
-      res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}/signin?error=oauth_failed`);
+      res.redirect(`${process.env.CLIENT_URL || "https://cloud-drive-frontend-six.vercel.app"}/signin?error=oauth_failed`);
     }
   }
 );

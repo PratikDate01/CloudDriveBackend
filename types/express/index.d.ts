@@ -1,12 +1,11 @@
-import type { File } from "multer";
+import * as express from 'express';
+import { File } from 'multer';
 
 declare global {
   namespace Express {
-    export interface Request {
+    interface Request {
       file?: File;
       files?: File[];
     }
   }
 }
-
-export {};

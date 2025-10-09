@@ -10,7 +10,9 @@ dotenv.config();
 const router = Router();
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "";
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const CLIENT_URL =
+  process.env.CLIENT_URL ||
+  "https://cloud-drive-frontend-six.vercel.app";
 
 if (!STRIPE_SECRET_KEY) {
   console.warn("[billing] STRIPE_SECRET_KEY is not set. Billing endpoints will be disabled.");

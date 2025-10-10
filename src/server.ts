@@ -20,7 +20,10 @@ const PORT = process.env.PORT || 3001;
 // ------------------------------
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://cloud-drive-frontend-six.vercel.app", // allow frontend origin
+    origin: [
+      process.env.CLIENT_URL || "https://cloud-drive-frontend-six.vercel.app",
+      "http://localhost:5173"
+    ], // allow frontend origin and localhost for testing
     credentials: true,
   })
 );

@@ -310,7 +310,7 @@ router.get("/google",
 );
 
 router.get("/google/callback",
-  passport.authenticate("google", { failureRedirect: "/signin", session: false }),
+  passport.authenticate("google", { failureRedirect: `${process.env.CLIENT_URL || "https://cloud-drive-frontend-six.vercel.app"}/signin?error=oauth_failed`, session: false }),
   async (req: Request, res: Response) => {
     try {
       const user = req.user as any;
